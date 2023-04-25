@@ -11,6 +11,8 @@ public class SimulationFrame {
     JLabel grupa = new JLabel();
     JPanel panel = new JPanel();
     JButton back = new JButton();
+    JTextField coada = new JTextField();
+
     public SimulationFrame(){
         frameA.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frameA.setSize(800,800);
@@ -45,8 +47,11 @@ public class SimulationFrame {
         panel.add(label);
 
         JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setBounds(50,100,700,600);
+        scrollPane.setBounds(50,100,700,550);
         panel.add(scrollPane);
+
+        coada.setBounds(50,660,700,40);
+        panel.add(coada);
 
         frameA.add(panel);
         frameA.setResizable(false);

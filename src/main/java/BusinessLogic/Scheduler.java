@@ -1,6 +1,6 @@
-package Scheduler;
-import Server.Server;
-import Client.Client;
+package BusinessLogic;
+import Model.Server;
+import Model.Client;
 import java.util.List;
 //import Strategy.Strategy;
 //import Strategy.SelectionPolicy;
@@ -10,27 +10,27 @@ public class Scheduler {
     private List<Server> servers;
     private int maxNoServers;
     private int maxClientsPerServer;
-    //private Strategy strategy;
+    private Strategy strategy;
 
-    public Scheduler(int maxNoServers, int maxClientsPerServer){
+    //DONE
+    public Scheduler(int maxNoServers){
         //for maxNoServers
         // - create server object
         //  - create thread with the object
+        for(int i = 0; i < maxNoServers; i++){
+            Server s = new Server();
+            Thread t = new Thread(s);
+            t.start();
+        }
     }
-    /*public void changeStrategy(SelectionPolicy policy){
-        //apply strategy patter to instantiate the strategy with the concrete strategy corresponding to policy
-        if(policy == SelectionPolicy.SHORTEST_QUEUE){
-            //strategy = new ConcreteStrategyQueue();
-        }
-        if(policy == SelectionPolicy.SHORTEST_TIME){
-            //strategy = new ConcreteStrategyTime();
-        }
-    }*/
 
+    //DONE
     public void dispatchClient(Client t){
         //call the strategy addTask method
+        strategy.addTask(servers,t);
     }
 
+    //DONE
     public List<Server> getServers(){
         return servers;
     }

@@ -1,9 +1,7 @@
-package SimulationManager;
+package BusinessLogic;
 //import Strategy.SelectionPolicy;
-import Scheduler.Scheduler;
-import Client.Client;
+import Model.Client;
 import Interfata.SimulationFrame;
-import Server.Server;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +16,6 @@ public class SimulationManager implements Runnable{
     public int minProcessingTime;
     public int numberOfServers;
     public int numberOfClients;
-    //public SelectionPolicy selectionPolicy = SelectionPolicy.SHORTEST_TIME;
     //entity responsible with queue management and clients distribution
     private Scheduler Scheduler;
     //frane for displaying simulation
@@ -26,6 +23,7 @@ public class SimulationManager implements Runnable{
     //pool of clients
     private ArrayList<Client> generatedClients;
 
+    //DONE
     public SimulationManager(int timeLimit, int maxProcessingTime, int minProcessingTime, int numberOfClients, int numberOfServers, int minArrivalTime, int maxArrivalTime){
         this.timeLimit = timeLimit;
         this.maxProcessingTime = maxProcessingTime;
@@ -38,7 +36,7 @@ public class SimulationManager implements Runnable{
         //initialize the scheduler
         //     => create and start numberOfServers threads
         //     => initialize selection straategy => create Strategy;
-        this.Scheduler = new Scheduler(numberOfServers,numberOfClients);
+        this.Scheduler = new Scheduler(numberOfServers);
         //initialize frame to display simulation
         frame = new SimulationFrame();
         //generate numberOfClients clients using generateNRandomClients and store them into generatedClients
@@ -46,6 +44,7 @@ public class SimulationManager implements Runnable{
         generateNRandomClients();
     }
 
+    //DONE
     public void generateNRandomClients(){
         //generate N random tasks
         for(int i = 1; i <= numberOfClients; i++){
@@ -67,21 +66,21 @@ public class SimulationManager implements Runnable{
         while(currentTime < timeLimit){
             //iterate generatedClients list and pick clients that have the arrivalTime equal with the currentTime
             List<Client> clients = new ArrayList<Client>();
-            for(int i = 0; i < generatedClients.size(); i++){
+            for(int i = 0; i < numberOfClients; i++){
                 Client client = generatedClients.get(i);
                 if(client.arrivalTime == currentTime){
                     clients.add(client);
                 }
             }
-            //   -send task to queue by calling the dispatchTask method from Scheduler
-            //Scheduler.changeStrategy(selectionPolicy);
+            //send task to queue by calling the dispatchTask method from Scheduler
             for(Client client : clients){
                 Scheduler.dispatchClient(client);
                 //   -delete client from list
                 generatedClients.remove(client);
             }
-            // update SimulationFrame
             currentTime++;
+            // update SimulationFrame
+
             //wait an interval of 1 second
             try{
                 Thread.sleep(1000);

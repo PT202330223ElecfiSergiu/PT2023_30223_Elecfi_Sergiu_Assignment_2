@@ -1,7 +1,6 @@
 package Interfata;
-import SimulationManager.SimulationManager;
+import BusinessLogic.SimulationManager;
 
-import java.util.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -174,7 +173,7 @@ public class Interfata{
             new Interfata();
         });*/
 
-        close.setText("back");
+        close.setText("exit");
         close.setFont(new Font("times new roman",Font.ITALIC,20));
         close.setBackground(Color.RED);
         close.setForeground(Color.WHITE);
