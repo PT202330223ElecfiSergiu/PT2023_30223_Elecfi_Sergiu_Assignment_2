@@ -6,6 +6,9 @@ import java.awt.*;
 public class SimulationFrame {
     JFrame frameA = new JFrame("Simulation Frame");
     JTextArea textArea = new JTextArea();
+    JTextArea textArea1 = new JTextArea();
+    JScrollPane scrollPane = new JScrollPane(textArea);
+    JScrollPane scrollPane1 = new JScrollPane(textArea1);
     JLabel label = new JLabel();
     JLabel nume = new JLabel();
     JLabel grupa = new JLabel();
@@ -46,9 +49,11 @@ public class SimulationFrame {
         label.setBounds(140,30,590,40);
         panel.add(label);
 
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setBounds(50,100,700,550);
+        scrollPane.setBounds(50,300,700,350);
         panel.add(scrollPane);
+
+        scrollPane1.setBounds(50,100,700,190);
+        panel.add(scrollPane1);
 
         coada.setBounds(50,660,700,40);
         panel.add(coada);
@@ -56,6 +61,17 @@ public class SimulationFrame {
         frameA.add(panel);
         frameA.setResizable(false);
         frameA.setVisible(true);
+    }
+
+    public void setareText(String a, String b){
+        coada.setText(a);
+        textArea.append(b);
+        if(b == "")
+        {
+            textArea1.setText("");
+        }else{
+            textArea1.setText(b);
+        }
     }
 }
 

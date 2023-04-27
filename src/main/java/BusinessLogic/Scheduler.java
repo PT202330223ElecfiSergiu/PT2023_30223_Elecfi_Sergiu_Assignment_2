@@ -1,6 +1,8 @@
 package BusinessLogic;
 import Model.Server;
 import Model.Client;
+
+import java.util.ArrayList;
 import java.util.List;
 //import Strategy.Strategy;
 //import Strategy.SelectionPolicy;
@@ -17,15 +19,19 @@ public class Scheduler {
         //for maxNoServers
         // - create server object
         //  - create thread with the object
+        strategy = new Strategy();
+        this.maxNoServers = maxNoServers;
+        this.servers = new ArrayList<>();
         for(int i = 0; i < maxNoServers; i++){
             Server s = new Server();
             Thread t = new Thread(s);
             t.start();
+            servers.add(s);
         }
     }
 
     //DONE
-    public void dispatchClient(Client t){
+    public void dispatchClientToServer(Client t){
         //call the strategy addTask method
         strategy.addTask(servers,t);
     }
@@ -34,5 +40,6 @@ public class Scheduler {
     public List<Server> getServers(){
         return servers;
     }
+
 }
 

@@ -2,10 +2,14 @@ package BusinessLogic;
 //import Strategy.SelectionPolicy;
 import Model.Client;
 import Interfata.SimulationFrame;
+import Model.Server;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 public class SimulationManager implements Runnable{
 
@@ -60,33 +64,95 @@ public class SimulationManager implements Runnable{
         Collections.sort(generatedClients);
     }
 
+    public Integer totalServiceTime(){
+        int x = 0;
+        for(Client aux : generatedClients){
+            x = x + aux.getServiceTime();
+        }
+        return x;
+    }
+
     @Override
     public void run() {
         int currentTime = 0;
-        while(currentTime < timeLimit){
-            //iterate generatedClients list and pick clients that have the arrivalTime equal with the currentTime
-            List<Client> clients = new ArrayList<Client>();
-            for(int i = 0; i < numberOfClients; i++){
-                Client client = generatedClients.get(i);
-                if(client.arrivalTime == currentTime){
-                    clients.add(client);
+        int totalServing = totalServiceTime();
+        try {
+            FileWriter writer = new FileWriter("log3.txt");
+            while(currentTime <= timeLimit){
+                String beta = "";
+                String delta = "";
+                frame.setareText("","");
+                //iterate generatedClients list and pick clients that have the arrivalTime equal with the currentTime
+                List<Client> clients = new ArrayList<Client>();
+                for(int i = 0; i < generatedClients.size(); i++){
+                    Client client = generatedClients.get(i);
+                    if(client.getArrivalTime() == currentTime){
+                        clients.add(client);
+                    }
+                }
+                //send task to queue by calling the dispatchTask method from Scheduler
+                for(Client client : clients){
+                    Scheduler.dispatchClientToServer(client);
+                    //   -delete client from list
+                    generatedClients.remove(client);
+                }
+                //afisarea coziilor in timp real
+                delta = "Time: " + currentTime + "\n";
+                writer.write("Time: " + currentTime + "\n");
+                String aux1 = "";
+                for(Client x : generatedClients){
+                    aux1 = aux1 + x.toString();
+                }
+                if(aux1 != ""){
+                    writer.write(aux1 + "\n");
+                    beta = aux1;
+                }
+                for(int i = 0; i < numberOfServers; i++){
+                    Server x = Scheduler.getServers().get(i);
+                    int d = i+1;
+                    writer.write("Queue" + d + ": ");
+                    delta = delta + "Queue" + d + ": ";
+                    BlockingQueue<Client> aux = x.getClienti();
+                    for(Client alfa : aux){
+                        writer.write(alfa.toString());
+                        delta = delta + alfa.toString();
+                    }
+                    writer.write("\n");
+                    delta = delta + "\n";
+                }
+                writer.write("-----------------------------------------------\n");
+                delta = delta + "-----------------------------------------------\n";
+                //modificare simulationFrame
+                frame.setareText(beta,delta);
+                beta = null;
+                delta = null;
+                //verificare daca mai sunt clienti
+                int d = 1;
+                for(int i = 0; i < numberOfServers; i++){
+                    Server x = Scheduler.getServers().get(i);
+                    BlockingQueue<Client> aux = x.getClienti();
+                    if(!aux.isEmpty()){
+                        d = 0;
+                    }
+                    if(!generatedClients.isEmpty()){
+                        d = 0;
+                    }
+                }
+                if(d == 1){
+                    currentTime = timeLimit;
+                }else currentTime++;
+                //wait an interval of 1 second
+                try{
+                    Thread.sleep(1000);
+                } catch (InterruptedException e){
+                    e.printStackTrace();
                 }
             }
-            //send task to queue by calling the dispatchTask method from Scheduler
-            for(Client client : clients){
-                Scheduler.dispatchClient(client);
-                //   -delete client from list
-                generatedClients.remove(client);
-            }
-            currentTime++;
-            // update SimulationFrame
-
-            //wait an interval of 1 second
-            try{
-                Thread.sleep(1000);
-            } catch (InterruptedException e){
-                e.printStackTrace();
-            }
+            writer.write("Average serving time: " + totalServing / numberOfClients);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        System.out.println("FINISHED");
     }
 }
