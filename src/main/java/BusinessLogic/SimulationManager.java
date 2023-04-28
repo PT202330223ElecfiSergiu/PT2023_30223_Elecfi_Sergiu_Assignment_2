@@ -78,7 +78,7 @@ public class SimulationManager implements Runnable{
         int totalServing = totalServiceTime();
         try {
             FileWriter writer = new FileWriter("log3.txt");
-            while(currentTime <= timeLimit){
+            while(currentTime < timeLimit){
                 String beta = "";
                 String delta = "";
                 frame.setareText("","");
@@ -139,8 +139,9 @@ public class SimulationManager implements Runnable{
                     }
                 }
                 if(d == 1){
-                    currentTime = timeLimit;
-                }else currentTime++;
+                    currentTime = timeLimit - 1;
+                }
+                currentTime++;
                 //wait an interval of 1 second
                 try{
                     Thread.sleep(1000);
